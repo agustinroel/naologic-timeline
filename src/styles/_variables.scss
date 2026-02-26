@@ -1,0 +1,115 @@
+// =============================================================================
+// Naologic ERP Timeline — Design Tokens
+// Source: MASTER_STYLING_GUIDE.md + Sketch Inspect Values
+// =============================================================================
+
+// ---------------------------------------------------------------------------
+// Core Palette
+// ---------------------------------------------------------------------------
+$color-primary: #3e40db;
+$color-primary-interaction: #5658ff;
+$color-surface: #ffffff;
+$color-app-background: #ffffff;
+$color-grid-divider: #eff0f4;
+$color-row-hover: rgba(238, 240, 255, 1);
+
+// ---------------------------------------------------------------------------
+// Text Colors (from Sketch inspect)
+// ---------------------------------------------------------------------------
+$text-main: #1d1d1b;
+$text-secondary: #333333;
+$text-muted: #687195;
+$text-header: #a0a5b8;
+
+// ---------------------------------------------------------------------------
+// Status Badge Palette  (Pill: background / text)
+// ---------------------------------------------------------------------------
+$status-open-bg: #edf0ff;
+$status-open-text: #3e40db;
+
+$status-in-progress-bg: #d6d8ff;
+$status-in-progress-text: #3e40db;
+
+$status-complete-bg: #e1ffcb;
+$status-complete-text: #2e7d32;
+
+$status-blocked-bg: #fbedb5;
+$status-blocked-text: #e65100;
+
+// ---------------------------------------------------------------------------
+// Work Order Bar Container Palette (background / border)
+// Each bar has a status-specific colored background — NOT white
+// ---------------------------------------------------------------------------
+$bar-open-bg: #edf0ff;
+$bar-open-border: #dee0ff;
+
+$bar-in-progress-bg: #edeeff;
+$bar-in-progress-border: #dee0ff;
+
+$bar-complete-bg: #f0ffe6;
+$bar-complete-border: #d0eabf;
+
+$bar-blocked-bg: #fff8e6;
+$bar-blocked-border: #f0e4a8;
+
+// ---------------------------------------------------------------------------
+// "Click to add dates" Hover Cue (from Sketch inspect)
+// ---------------------------------------------------------------------------
+$add-cue-rect-border: rgba(195, 199, 255, 1);   // #C3C7FF
+$add-cue-rect-bg: rgba(101, 112, 255, 0.1);
+$add-cue-tooltip-bg: rgba(104, 113, 150, 1);     // #687196
+$add-cue-tooltip-shadow: 0 2px 4px -2px rgba(200, 207, 233, 1), 0 0 16px -8px rgba(230, 235, 240, 1);
+
+// ---------------------------------------------------------------------------
+// Layout Dimensions (from Sketch)
+// ---------------------------------------------------------------------------
+$work-center-column-width: 380px;
+$slide-out-panel-width: 400px;
+$slide-out-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+
+// ---------------------------------------------------------------------------
+// Timeline
+// ---------------------------------------------------------------------------
+$today-indicator-width: 2px;
+$today-indicator-color: $color-primary-interaction;
+$timeline-row-height: 48px;
+$timeline-row-height-first: 32px; // Precisely fits the 8px top/8px bottom padding + 16px typical line height
+$timeline-header-height: 50px;
+
+// ---------------------------------------------------------------------------
+// Typography
+// ---------------------------------------------------------------------------
+$font-family-base:
+  'Circular-Std',
+  -apple-system,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  Roboto,
+  Helvetica,
+  Arial,
+  sans-serif;
+
+$font-size-xs: 11px;
+$font-size-sm: 13px;
+$font-size-base: 14px;
+$font-size-md: 16px;
+$font-size-lg: 20px;
+$font-size-xl: 24px;
+$font-size-page-title: 22px;
+
+// ---------------------------------------------------------------------------
+// Spacing Scale (4px grid)
+// ---------------------------------------------------------------------------
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-5: 20px;
+$space-6: 24px;
+$space-8: 32px;
+$space-10: 40px;
+
+// ---------------------------------------------------------------------------
+// Transitions
+// ---------------------------------------------------------------------------
+$transition-panel: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);

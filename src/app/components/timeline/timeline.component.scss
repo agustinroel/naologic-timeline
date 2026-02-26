@@ -1,0 +1,392 @@
+@use '../../../styles/variables' as *;
+
+// =============================================================================
+// Timeline Component — Exact Sketch Inspector Measurements
+// =============================================================================
+
+// ── Page-level layout ───────────────────────────────────────────────────────
+.timeline-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: $color-app-background;
+  overflow: hidden;
+}
+
+// ── Page Header (1440×50px) ─────────────────────────────────────────────────
+.page-header {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  flex-shrink: 0;
+  background: $color-surface;
+
+  &__logo {
+    margin-left: 101px;
+
+    img {
+      width: 80px;
+      height: 10px;
+      display: block;
+    }
+  }
+}
+
+// ── Title section (below header) ────────────────────────────────────────────
+.page-title-section {
+  flex-shrink: 0;
+  padding-left: 101px;
+  padding-top: 47px; // 97px from top = 50px header + 47px gap
+}
+
+.page-title {
+  width: 142px;
+  height: 34px;
+  font-size: $font-size-page-title;
+  font-weight: 700;
+  font-family: $font-family-base;
+  color: $text-main;
+  line-height: 34px;
+  margin: 0;
+}
+
+// ── Timescale Selector ──────────────────────────────────────────────────────
+.timescale-selector {
+  display: inline-flex;
+  width: max-content;
+  align-items: center;
+  gap: 0; // Remove gap so they touch
+  position: relative;
+  margin-top: $space-3;
+  margin-bottom: $space-4;
+  margin-left: 101px; // Use margin instead of padding so the shadow wraps correctly
+
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.timescale-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 75px;
+  height: 28px;
+  border-radius: 6px 0 0 6px; // Left side rounded
+  background-color: rgba(244, 245, 249, 1); // Exact light-gray from design
+  font-size: $font-size-sm;
+  font-weight: 450;
+  color: $text-muted;
+}
+
+.timescale-dropdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 75px;
+  height: 28px;
+  border-radius: 0 6px 6px 0; // Right side rounded
+  background-color: rgba(255, 255, 255, 1);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(241, 243, 248, 0.5);
+  }
+}
+
+.timescale-value {
+  font-size: $font-size-sm;
+  font-weight: 500;
+  color: $color-primary;
+}
+
+.timescale-caret {
+  width: 12px;
+  height: 8px;
+  margin-top: 1px; // Optical alignment adjustment
+  color: rgba(200, 207, 233, 1); // Default muted color
+
+  &--open {
+    color: rgb(86, 89, 255); // Active/open state
+  }
+}
+
+.timescale-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 200px;
+  height: 136px;
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 5px;
+  box-shadow: 0 0 0 1px rgba(104, 113, 150, 0.1), 0 2.5px 3px -1.5px rgba(200, 207, 233, 1), 0 4.5px 5px -1px rgba(216, 220, 235, 1);
+  padding: 12px 0;
+  border: none;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.timescale-option {
+  display: flex;
+  align-items: center;
+  width: 200px;
+  height: 28px;
+  padding: 0 16px;
+  border: none;
+  background-color: transparent; // Default state (represents the opacity: 0 from Sketch)
+  text-align: left;
+  font-size: 14px;
+  font-family: 'Circular-Std', sans-serif;
+  font-weight: 500;
+  color: rgba(47, 48, 89, 1);
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+
+  &:hover {
+    background-color: rgba(241, 243, 248, 1);
+  }
+
+  &--active {
+    color: $color-primary;
+    font-weight: 600;
+  }
+}
+
+// ── Grid Wrapper ────────────────────────────────────────────────────────────
+.timeline-wrapper {
+  display: grid;
+  grid-template-columns: $work-center-column-width 1fr;
+  flex: 1;
+  overflow: hidden;
+  border: 1px solid $color-grid-divider;
+  margin: 0 102px 20px; // 102px from both left and right
+  background: $color-surface;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+// ── LEFT PANEL (380px wide) ─────────────────────────────────────────────────
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  width: $work-center-column-width;
+  border-right: 1px solid $color-grid-divider;
+  background: $color-surface;
+  overflow: hidden;
+  z-index: 2;
+
+  &__header {
+    height: $timeline-row-height-first; // 32px
+    display: flex;
+    align-items: center;
+    padding: 0 211px 0 31px;
+    border-bottom: 1px solid $color-grid-divider;
+    background: $color-surface;
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Circular-Std', sans-serif;
+    color: rgba(104, 113, 150, 1);
+    letter-spacing: 0.2px;
+  }
+
+  &__rows {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden; // Prevent horizontal scrollbar
+  }
+
+  &__row {
+    width: $work-center-column-width;
+    height: $timeline-row-height; // 48px
+    display: flex;
+    align-items: center;
+    padding: 0 $space-5 0 31px;
+    border-bottom: 1px solid $color-grid-divider;
+    &.row--first {
+      height: 60px;
+    }
+  }
+}
+
+.wc-name {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Circular-Std', sans-serif;
+  color: rgba(3, 9, 41, 1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.1px;
+}
+
+// ── RIGHT PANEL ─────────────────────────────────────────────────────────────
+.right-panel {
+  overflow-x: auto;
+  overflow-y: auto;
+  position: relative;
+}
+
+.timeline-canvas {
+  position: relative;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+// ── Column Headers ──────────────────────────────────────────────────────────
+.timeline-header {
+  position: sticky;
+  top: 0;
+  height: $timeline-row-height-first; // 60px — matches left panel header
+  display: flex;
+  z-index: 5; // Above bars (1) so the current-month badge is visible
+  background: $color-surface;
+  border-bottom: 1px solid $color-grid-divider;
+
+  &__cell {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; // Centers text vertically
+    padding: 8px 0; // 8px top and bottom padding per requirements
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Circular-Std', sans-serif;
+    color: rgba(104, 113, 150, 1);
+    text-align: center;
+    border-right: 1px solid $color-grid-divider;
+    user-select: none;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: ellipsis;
+    letter-spacing: 0.2px;
+
+    &--current {
+      background: rgba($color-primary-interaction, 0.03);
+    }
+  }
+}
+
+// ── Current Month Badge (Sketch: 109×22px, border-radius 5px, #D4D7FF) ─────
+.current-month-badge {
+  position: absolute;
+  bottom: -22px; // Starts exactly where the header ends (badge height = 22px)
+  left: 50%;
+  transform: translateX(-50%);
+  width: 109px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: $color-primary;
+  background: rgba(212, 215, 255, 1); // #D4D7FF
+  border-radius: 5px;
+  white-space: nowrap;
+  z-index: 20; // Above bars (1), cue (10), but below action dropdown (50)
+}
+
+// ── Grid Body ───────────────────────────────────────────────────────────────
+.timeline-body {
+  position: relative;
+  flex: 1; // Stretch to fill the Remaining Canvas height
+}
+
+// ── Column fills (month body background) ────────────────────────────────
+.grid-col-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: rgba(247, 249, 252, 1); // #F7F9FC
+  z-index: 0;
+  pointer-events: none;
+}
+
+.grid-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: $color-grid-divider;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.current-month-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px; 
+  background-color: rgba(212, 215, 255, 1);
+  z-index: 0; // Behind bars which are z-index 1
+  pointer-events: none;
+}
+
+// ── Timeline Row (48px, matching left panel) ────────────────────────────────
+.timeline-row {
+  position: relative;
+  height: $timeline-row-height; // 48px
+  background: transparent; // No horizontal border in the grid body!
+  transition: background-color 0.15s ease;
+  cursor: pointer;
+
+  &.row--hovered {
+    background: $color-row-hover;
+  }
+
+  &.row--first {
+    height: 60px;
+  }
+}
+
+// =============================================================================
+// "Click to add dates" — Exact Sketch specs, higher z-index (#6)
+// =============================================================================
+.row-add-cue {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 130px; // To center the 130px tooltip and 113px rect perfectly
+  pointer-events: none;
+  z-index: 10; // Above all bars (z:1) and today indicator (z:3)
+
+  &__tooltip {
+    position: absolute;
+    bottom: calc(50% + 23px); // From middle (50%), up past half-rect (19px) and gap (4px)
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $add-cue-tooltip-bg;
+    border-radius: 8px;
+    box-shadow: $add-cue-tooltip-shadow;
+    color: #fff;
+    font-size: $font-size-xs;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  &__rect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 113px;
+    height: 38px;
+    border: 1px solid $add-cue-rect-border;
+    border-radius: 8px;
+    background: $add-cue-rect-bg;
+  }
+}

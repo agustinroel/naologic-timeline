@@ -1,1 +1,51 @@
-/* You can add global styles to this file, and also import other style files */
+@use 'styles/variables' as *;
+
+// =============================================================================
+// Global Reset & Base Styles — Pixel-Perfect
+// =============================================================================
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  color: $text-main;
+  background: $color-app-background;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+// Smooth scrollbar for WebKit browsers
+::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d5d6dc;
+  border-radius: 3px;
+
+  &:hover {
+    background: #b8bac2;
+  }
+}
+
+// Utility: prevent text selection on UI chrome
+.no-select {
+  user-select: none;
+}

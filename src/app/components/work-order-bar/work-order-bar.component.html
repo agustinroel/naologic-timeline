@@ -1,0 +1,37 @@
+<!-- Work Order Bar — matches Sketch layout:
+     [Name] ─────────── [Status Pill] [⋯]
+     Three-dot trigger shown on hover, dropdown opens on click only -->
+
+<div
+  [ngClass]="['bar', statusClass(), menuOpen() ? 'menu-open' : '']"
+  [style.left.px]="leftPx()"
+  [style.width.px]="widthPx()"
+  [title]="order().name"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+>
+  <!-- Order name -->
+  <span class="bar__name">{{ order().name }}</span>
+
+  <!-- Status pill badge (inside bar, right side) -->
+  <span class="bar__status-pill" [ngClass]="statusClass()">
+    {{ order().status }}
+  </span>
+
+  <!-- Three-dot trigger + dropdown wrapper -->
+  @if (hovered() || menuOpen()) {
+    <div class="bar__menu-wrapper">
+      <button class="bar__menu-trigger" aria-label="Actions" (click)="toggleMenu($event)">⋯</button>
+
+      <!-- Dropdown — visible only after clicking the three-dot trigger -->
+      @if (menuOpen()) {
+        <div class="bar__menu-dropdown">
+          <button class="bar__menu-item" (click)="onEdit($event)">Edit</button>
+          <button class="bar__menu-item bar__menu-item--danger" (click)="onDelete($event)">
+            Delete
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>

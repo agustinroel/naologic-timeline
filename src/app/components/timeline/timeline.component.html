@@ -1,0 +1,171 @@
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- Naologic ERP Timeline — Exact Sketch Layout                           -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+<div class="timeline-page">
+  <!-- ── Header bar (1440×50px, logo at 101px from left) ─────────────── -->
+  <header class="page-header">
+    <div class="page-header__logo">
+      <img src="assets/naologic-logo.png" alt="Naologic" />
+    </div>
+  </header>
+
+  <!-- ── Title "Work Orders" (at 97px from top, 101px from left) ─────── -->
+  <div class="page-title-section">
+    <h1 class="page-title">Work Orders</h1>
+  </div>
+
+  <!-- ── Timescale selector ──────────────────────────────────────────── -->
+  <div class="timescale-selector">
+    <span class="timescale-label">Timescale</span>
+    <div class="timescale-dropdown" (click)="toggleTimescaleMenu()">
+      <span class="timescale-value">{{ zoomLabel() }}</span>
+      <svg
+        class="timescale-caret"
+        [class.timescale-caret--open]="timescaleMenuOpen()"
+        width="12"
+        height="8"
+        viewBox="0 0 12 8"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M1.5 1.5L6 6L10.5 1.5"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+    @if (timescaleMenuOpen()) {
+      <div class="timescale-menu">
+        <button
+          class="timescale-option"
+          [class.timescale-option--active]="zoomLevel() === 'day'"
+          (click)="setZoomLevel('day')"
+        >
+          Hour
+        </button>
+        <button
+          class="timescale-option"
+          [class.timescale-option--active]="zoomLevel() === 'day'"
+          (click)="setZoomLevel('day')"
+        >
+          Day
+        </button>
+        <button
+          class="timescale-option"
+          [class.timescale-option--active]="zoomLevel() === 'week'"
+          (click)="setZoomLevel('week')"
+        >
+          Week
+        </button>
+        <button
+          class="timescale-option"
+          [class.timescale-option--active]="zoomLevel() === 'month'"
+          (click)="setZoomLevel('month')"
+        >
+          Month
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- ── Grid Area (102px from left edge) ────────────────────────────── -->
+  <div class="timeline-wrapper">
+    <!-- ── LEFT PANEL (380px wide) ─────────────────────────────────── -->
+    <aside class="left-panel">
+      <div class="left-panel__header">Work Center</div>
+      <div class="left-panel__rows">
+        @for (wc of workCenters(); track wc.docId; let isFirst = $first) {
+          <div
+            class="left-panel__row"
+            [class.row--first]="isFirst"
+            (mouseenter)="onRowHover(wc.data.id)"
+            (mouseleave)="onRowHover(null)"
+          >
+            <span class="wc-name">{{ wc.data.name }}</span>
+          </div>
+        }
+      </div>
+    </aside>
+
+    <!-- ── RIGHT PANEL ─────────────────────────────────────────────── -->
+    <section class="right-panel" #scrollContainer>
+      <div class="timeline-canvas" [style.width.px]="totalWidth()">
+        <!-- Column headers (60px tall = first row height) -->
+        <div class="timeline-header">
+          @for (col of columns(); track col.key) {
+            <div
+              class="timeline-header__cell"
+              [class.timeline-header__cell--current]="col.isCurrent"
+              [style.width.px]="col.widthPx"
+              [style.left.px]="col.startOffset"
+            >
+              @if (col.isCurrent) {
+                <span class="current-month-badge">Current month</span>
+              }
+              <span>{{ col.label }}</span>
+            </div>
+          }
+        </div>
+
+        <!-- Grid body -->
+        <div class="timeline-body">
+          <!-- Column fills (month body background #F7F9FC) -->
+          @for (col of columns(); track col.key) {
+            <div
+              class="grid-col-fill"
+              [style.left.px]="col.startOffset"
+              [style.width.px]="col.widthPx"
+            ></div>
+          }
+
+          <!-- Column separator lines -->
+          @for (col of columns(); track col.key) {
+            <div class="grid-line" [style.left.px]="col.startOffset"></div>
+          }
+
+          <!-- Current Month left border (3px #D4D7FF line) -->
+          @for (col of columns(); track col.key) {
+            @if (col.isCurrent) {
+              <div class="current-month-line" [style.left.px]="col.startOffset"></div>
+            }
+          }
+
+          <!-- Work Center rows (48px each, 60px for the first row) -->
+          @for (wc of workCenters(); track wc.docId; let isFirst = $first) {
+            <div
+              class="timeline-row"
+              [class.row--first]="isFirst"
+              [class.row--hovered]="hoveredRow() === wc.data.id"
+              (mouseenter)="onRowHover(wc.data.id)"
+              (mouseleave)="onRowHover(null)"
+              (mousemove)="onRowMouseMove($event, wc.data.id)"
+              (click)="onEmptyClick($event, wc.data.id)"
+            >
+              <!-- "Click to add dates" — z-index 10, above all bars -->
+              @if (hoveredRow() === wc.data.id && cueVisible()) {
+                <div class="row-add-cue" [style.left.px]="cueLeftPx()">
+                  <span class="row-add-cue__tooltip">Click to add dates</span>
+                  <div class="row-add-cue__rect"></div>
+                </div>
+              }
+
+              @for (order of getOrdersForCenter(wc.data.id); track order.docId) {
+                <app-work-order-bar
+                  [order]="order.data"
+                  [leftPx]="getBarLeft(order.data)"
+                  [widthPx]="getBarWidth(order.data)"
+                  (editOrder)="onEditOrder($event)"
+                  (deleteOrder)="onDeleteOrder($event)"
+                />
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

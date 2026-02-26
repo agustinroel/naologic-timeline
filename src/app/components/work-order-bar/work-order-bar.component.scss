@@ -1,0 +1,161 @@
+@use '../../../styles/variables' as *;
+
+// =============================================================================
+// WorkOrderBarComponent — Exact Sketch Specs
+//
+// Bar: status-colored background (NOT white) with 1px inside border
+// Pill: border-radius 5px, 22px height
+// Layout: [Name] ─── [Status Pill] [⋯]
+// =============================================================================
+
+.bar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 $space-2 0 $space-3;
+  gap: $space-2;
+  font-size: $font-size-sm;
+  white-space: nowrap;
+  overflow: visible;
+  cursor: pointer;
+  z-index: 1;
+  transition: box-shadow 0.15s ease;
+
+  &.menu-open {
+    z-index: 50;
+  }
+
+  // ── Status-specific bar backgrounds (from Sketch) ─────────────────
+  &.status-open {
+    background: $bar-open-bg;
+    box-shadow: inset 0 0 0 1px $bar-open-border;
+  }
+
+  &.status-in-progress {
+    background: $bar-in-progress-bg;
+    box-shadow: inset 0 0 0 1px $bar-in-progress-border;
+  }
+
+  &.status-complete {
+    background: $bar-complete-bg;
+    box-shadow: inset 0 0 0 1px $bar-complete-border;
+  }
+
+  &.status-blocked {
+    background: $bar-blocked-bg;
+    box-shadow: inset 0 0 0 1px $bar-blocked-border;
+  }
+
+  &:hover {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  // ── Name ────────────────────────────────────────────────────────────
+  &__name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Circular-Std', sans-serif;
+    color: rgba(3, 9, 41, 1);
+  }
+
+  &__status-pill {
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Circular-Std', sans-serif;
+    height: 22px;
+    line-height: 22px;
+    padding: 0 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+
+    &.status-in-progress {
+      background: $status-in-progress-bg;
+      color: rgba(62, 64, 219, 1);
+    }
+    &.status-complete {
+      background: $status-complete-bg;
+      color: rgba(8, 162, 104, 1);
+    }
+    &.status-blocked {
+      background: $status-blocked-bg;
+      color: rgba(177, 54, 0, 1);
+    }
+  }
+
+  // ── Three-dot trigger ───────────────────────────────────────────────
+  &__menu-wrapper {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  &__menu-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: none;
+    background: transparent;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    color: $text-muted;
+    line-height: 1;
+    padding: 0;
+    transition: all 0.12s ease;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: $text-main;
+    }
+  }
+
+  &__menu-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    width: 200px;
+    background-color: rgba(255, 255, 255, 1);
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 0 0 1px rgba(104, 113, 150, 0.1), 0 2.5px 3px -1.5px rgba(200, 207, 233, 1), 0 4.5px 5px -1px rgba(216, 220, 235, 1);
+    padding: 12px 0;
+    z-index: 100;
+  }
+
+  &__menu-item {
+    display: block;
+    width: 100%;
+    padding: 8px 16px;
+    border: none;
+    background: none;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Circular-Std', sans-serif;
+    color: rgba(47, 48, 89, 1);
+    cursor: pointer;
+    transition: background 0.12s ease;
+
+    &:hover {
+      background: $color-row-hover;
+    }
+
+    &--danger {
+      color: $color-primary;
+
+      &:hover {
+        background: rgba($color-primary, 0.04);
+      }
+    }
+  }
+}
