@@ -92,7 +92,15 @@
     </aside>
 
     <!-- ── RIGHT PANEL ─────────────────────────────────────────────── -->
-    <section class="right-panel" #scrollContainer>
+    <section
+      class="right-panel"
+      #scrollContainer
+      [class.is-dragging]="isDragging()"
+      (mousedown)="onMouseDown($event)"
+      (mouseleave)="onMouseLeave()"
+      (mouseup)="onMouseUp()"
+      (mousemove)="onMouseMoveGrid($event)"
+    >
       <div class="timeline-canvas" [style.width.px]="totalWidth()">
         <!-- Column headers (60px tall = first row height) -->
         <div class="timeline-header">
@@ -172,8 +180,9 @@
 
 <!-- ── Backdrop overlay (blur) ──────────────────────────────────────── -->
 @if (panelOpen()) {
-  <div class="backdrop-overlay" (click)="onPanelCancel()"></div>
+  <div class="backdrop-overlay" [class.closing]="isClosing()" (click)="onPanelCancel()"></div>
   <app-details-panel
+    [class.closing]="isClosing()"
     [workOrder]="panelWorkOrder()"
     [workCenterId]="panelWorkCenterId()"
     [prefillStartDate]="panelPrefillDate()"

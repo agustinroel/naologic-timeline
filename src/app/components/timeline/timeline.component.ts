@@ -85,9 +85,16 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   // ── Panel state ───────────────────────────────────────────────────────
   readonly panelOpen = signal(false);
+  readonly isClosing = signal(false); // Used to trigger CSS slide-out
   readonly panelWorkOrder = signal<WorkOrder | null>(null);
   readonly panelWorkCenterId = signal<string>('');
   readonly panelPrefillDate = signal<string>('');
+
+  // ── Drag to Scroll ────────────────────────────────────────────────────
+  readonly isDragging = signal(false);
+  private startX = 0;
+  private scrollLeft = 0;
+  private hasDragged = false;
 
   // ── Error Toast ───────────────────────────────────────────────────────
   readonly toastMessage = signal<string | null>(null);
@@ -162,6 +169,11 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   onRowMouseMove(event: MouseEvent, workCenterId: string): void {
+    if (this.isDragging()) {
+      this.cueVisible.set(false);
+      return;
+    }
+
     const row = event.currentTarget as HTMLElement;
     const rect = row.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
@@ -223,6 +235,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   onEmptyClick(event: MouseEvent, workCenterId: string): void {
+    if (this.hasDragged) return;
     if ((event.target as HTMLElement).closest('app-work-order-bar')) return;
 
     const row = event.currentTarget as HTMLElement;
@@ -242,8 +255,16 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   // ── Panel actions ────────────────────────────────────────────────────
   onPanelCancel(): void {
-    this.panelOpen.set(false);
-    this.panelWorkOrder.set(null);
+    this.closePanelWithAnimation();
+  }
+
+  private closePanelWithAnimation(): void {
+    this.isClosing.set(true);
+    setTimeout(() => {
+      this.panelOpen.set(false);
+      this.isClosing.set(false);
+      this.panelWorkOrder.set(null);
+    }, 250); // Matches the slideOut CSS animation duration
   }
 
   onPanelSave(data: Partial<WorkOrder>): void {
@@ -285,14 +306,48 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       this.workOrders.update((orders) => [...orders, envelope]);
     }
 
-    this.panelOpen.set(false);
-    this.panelWorkOrder.set(null);
+    this.closePanelWithAnimation();
   }
 
   showErrorToast(msg: string): void {
     this.toastMessage.set(msg);
     if (this.toastTimeout) clearTimeout(this.toastTimeout);
     this.toastTimeout = setTimeout(() => this.toastMessage.set(null), 4000);
+  }
+
+  // ── Drag to Scroll Events ─────────────────────────────────────────────
+  onMouseDown(e: MouseEvent): void {
+    const el = this.scrollContainer?.nativeElement;
+    if (!el) return;
+    this.isDragging.set(true);
+    this.hasDragged = false;
+    this.startX = e.pageX - el.offsetLeft;
+    this.scrollLeft = el.scrollLeft;
+  }
+
+  onMouseLeave(): void {
+    this.isDragging.set(false);
+  }
+
+  onMouseUp(): void {
+    this.isDragging.set(false);
+  }
+
+  onMouseMoveGrid(e: MouseEvent): void {
+    if (!this.isDragging()) return;
+    e.preventDefault(); // prevent text selection while dragging
+    const el = this.scrollContainer?.nativeElement;
+    if (!el) return;
+
+    const x = e.pageX - el.offsetLeft;
+    const walk = (x - this.startX) * 1.5; // Scroll speed multiplier
+
+    // Only count as a drag if we moved a substantial amount
+    if (Math.abs(x - this.startX) > 5) {
+      this.hasDragged = true;
+    }
+
+    el.scrollLeft = this.scrollLeft - walk;
   }
 
   // ── Column building ───────────────────────────────────────────────────

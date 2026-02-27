@@ -49,4 +49,5 @@
   - [x] Page header: No border-bottom below logo.
 - [x] **Optimization**: Implement `OnPush` change detection and `trackBy` for timeline rendering performance.
 - [x] **Persistence (Bonus)**: Implement `localStorage` to persist Work Order changes across refreshes.
+- [x] **Drag-to-Scroll (Bonus)**: Implement horizontal drag functionality within the timeline grid to pan the view naturally.
 - [ ] **Final Delivery**: Record the 10-minute Loom video walking through the code, the zoom functionality, and the overlap error scenario.

@@ -5,217 +5,220 @@
 // Panel: 591px, slide-in from right, rounded left corners
 // =============================================================================
 
-.panel {
+:host {
+  display: block; // Hosts are inline by default
   position: fixed;
   top: 0;
   right: 0;
   width: $slide-out-panel-width;
   height: 100vh;
-  background-color: rgba(255, 255, 255, 1);
-  border-radius: 12px 0 0 12px;
-  box-shadow: $slide-out-shadow;
   z-index: 200;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  font-family: $font-family-base;
+  pointer-events: auto; // Ensure clicks are caught
+  
+  // Custom CSS animation
+  transform: translateX(100%);
+  animation: slideIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
 
-  // ── Header ──────────────────────────────────────────────────────────
-  &__header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    padding: 16px 24px 0 24px;
+  &.closing {
+    animation: slideOut 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
   }
 
-  &__header-text {
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__title {
-    margin: 0;
-    color: rgba(47, 48, 89, 1);
-    font-size: 20px;
-    font-weight: 600; // CircularStd-Medium
-    line-height: 25px;
-  }
-
-  &__subtitle {
-    margin: 5px 0 0 0;
-    color: rgba(104, 113, 150, 1);
-    font-size: 16px;
-    font-weight: 500; // CircularStd-Book
-    line-height: 20px;
-  }
-
-  &__header-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-    margin-top: 2px; // Optical alignment with title
-  }
-
-  // ── Buttons ─────────────────────────────────────────────────────────
-  &__btn {
-    width: 66px;
-    height: 32px;
-    border-radius: 7px;
-    border: none;
-    font-family: $font-family-base;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.15s ease;
-
-    &:hover {
-      opacity: 0.85;
-    }
-
-    &--cancel {
-      background-color: rgba(255, 255, 255, 1);
-      box-shadow: 0 1px 3px 0 rgba(200, 207, 233, 0.6), 0 2px 8px -2px rgba(200, 207, 233, 0.4);
-      color: rgba(47, 48, 89, 1);
-    }
-
-    &--create {
-      background-color: rgba(86, 89, 255, 1);
-      box-shadow: 0 0 0 1px rgba(86, 89, 255, 1), 0 1px 3px 0 rgba(200, 207, 233, 1);
-      color: #ffffff;
-    }
-  }
-
-  // ── Divider ─────────────────────────────────────────────────────────
-  &__divider {
+  .panel {
     width: 100%;
-    height: 1px;
-    background-color: rgba(230, 235, 240, 1);
-    margin-top: 16px;
-  }
-
-  // ── Form ────────────────────────────────────────────────────────────
-  &__form {
-    padding: 24px 24px 24px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  &__field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  &__label {
-    color: rgba(104, 113, 150, 1);
-    font-size: 14px;
-    font-weight: 400; // CircularStd-Regular
-    line-height: 16px;
-  }
-
-  &__input {
-    width: 100%;
-    height: 38px;
-    border: none;
-    border-radius: 5px;
+    height: 100%;
     background-color: rgba(255, 255, 255, 1);
-    box-shadow: 0 0 0 1px rgba(216, 220, 235, 1),
-      0 1.5px 3px -1.5px rgba(200, 207, 233, 1),
-      0 1px 0.5px -1px rgba(216, 220, 235, 1);
-    padding: 0 12px;
+    border-radius: 12px 0 0 12px;
+    box-shadow: $slide-out-shadow;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
     font-family: $font-family-base;
-    font-size: 14px;
-    font-weight: 400; // CircularStd-Regular
-    color: rgba(3, 9, 41, 1);
-    outline: none;
-    box-sizing: border-box;
-    transition: box-shadow 0.15s ease;
 
-    &:focus {
-      box-shadow: 0 0 0 1px rgba(86, 89, 255, 0.5),
-        0 1.5px 3px -1.5px rgba(200, 207, 233, 1),
-        0 1px 0.5px -1px rgba(216, 220, 235, 1);
+    // ── Header ──────────────────────────────────────────────────────────
+    &__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 16px 24px 0 24px;
     }
 
-    &::placeholder {
-      color: rgba(104, 113, 150, 0.5);
+    &__header-text {
+      display: flex;
+      flex-direction: column;
     }
 
-    // Date inputs: hide native calendar icon
-    &[type='date'] {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      position: relative;
+    &__title {
+      margin: 0;
+      color: rgba(47, 48, 89, 1);
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 25px;
+    }
 
-      &::-webkit-calendar-picker-indicator {
-        opacity: 0;
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        cursor: pointer;
+    &__subtitle {
+      margin: 5px 0 0 0;
+      color: rgba(104, 113, 150, 1);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    &__header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    // ── Buttons ─────────────────────────────────────────────────────────
+    &__btn {
+      width: 66px;
+      height: 32px;
+      border-radius: 7px;
+      border: none;
+      font-family: $font-family-base;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s ease;
+
+      &:hover {
+        opacity: 0.85;
+      }
+
+      &--cancel {
+        background-color: rgba(255, 255, 255, 1);
+        box-shadow: 0 1px 3px 0 rgba(200, 207, 233, 0.6), 0 2px 8px -2px rgba(200, 207, 233, 0.4);
+        color: rgba(47, 48, 89, 1);
+      }
+
+      &--create {
+        background-color: rgba(86, 89, 255, 1);
+        box-shadow: 0 0 0 1px rgba(86, 89, 255, 1), 0 1px 3px 0 rgba(200, 207, 233, 1);
+        color: #ffffff;
       }
     }
 
-    // ── Status input variant ─────────────────────────────────────────
-    &--status {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      user-select: none;
+    // ── Divider ─────────────────────────────────────────────────────────
+    &__divider {
+      width: 100%;
+      height: 1px;
+      background-color: rgba(230, 235, 240, 1);
+      margin-top: 16px;
     }
 
-    // ── Date input variant ───────────────────────────────────────────
-    &--date {
+    // ── Form ────────────────────────────────────────────────────────────
+    &__form {
+      padding: 24px 24px 24px 24px;
       display: flex;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
+      flex-direction: column;
+      gap: 16px;
     }
-  }
 
-  // ── Date placeholder text ───────────────────────────────────────────
-  &__date-placeholder {
-    color: rgba(104, 113, 150, 0.5);
-  }
+    &__field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
 
-  // ── Date wrapper (relative anchor) ──────────────────────────────────
-  &__date-wrapper {
-    position: relative;
-  }
+    &__label {
+      color: rgba(104, 113, 150, 1);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 16px;
+    }
 
-  // ── Datepicker dropdown container ───────────────────────────────────
-  &__datepicker-dropdown {
-    position: absolute;
-    top: calc(100% + 5px);
-    left: 0;
-    z-index: 10;
-    background-color: rgba(255, 255, 255, 1);
-    border-radius: 8px;
-    box-shadow:
-      0 0 0 1px rgba(104, 113, 150, 0.1),
-      0 2.5px 3px -1.5px rgba(200, 207, 233, 1),
-      0 4.5px 5px -1px rgba(216, 220, 235, 1);
-    padding: 8px;
-    font-family: $font-family-base;
-  }
+    &__input {
+      width: 100%;
+      height: 38px;
+      border: none;
+      border-radius: 5px;
+      background-color: rgba(255, 255, 255, 1);
+      box-shadow: 0 0 0 1px rgba(216, 220, 235, 1),
+        0 1.5px 3px -1.5px rgba(200, 207, 233, 1),
+        0 1px 0.5px -1px rgba(216, 220, 235, 1);
+      padding: 0 12px;
+      font-family: $font-family-base;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(3, 9, 41, 1);
+      outline: none;
+      box-sizing: border-box;
+      transition: box-shadow 0.15s ease;
 
-  // ── Status Pill (inside input) ──────────────────────────────────────
-  &__status-pill {
-    display: inline-flex;
-    align-items: center;
-    height: 22px;
-    padding: 0 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: 500;
-    white-space: nowrap;
+      &:focus {
+        box-shadow: 0 0 0 1px rgba(86, 89, 255, 0.5),
+          0 1.5px 3px -1.5px rgba(200, 207, 233, 1),
+          0 1px 0.5px -1px rgba(216, 220, 235, 1);
+      }
 
-    &.panel__status-pill {
+      &::placeholder {
+        color: rgba(104, 113, 150, 0.5);
+      }
+
+      &[type='date'] {
+        -webkit-appearance: none;
+        appearance: none;
+        position: relative;
+        &::-webkit-calendar-picker-indicator {
+          opacity: 0;
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          cursor: pointer;
+        }
+      }
+
+      &--status {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      &--date {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+      }
+    }
+
+    &__date-placeholder {
+      color: rgba(104, 113, 150, 0.5);
+    }
+
+    &__date-wrapper {
+      position: relative;
+    }
+
+    &__datepicker-dropdown {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      z-index: 10;
+      background-color: rgba(255, 255, 255, 1);
+      border-radius: 8px;
+      box-shadow:
+        0 0 0 1px rgba(104, 113, 150, 0.1),
+        0 2.5px 3px -1.5px rgba(200, 207, 233, 1),
+        0 4.5px 5px -1px rgba(216, 220, 235, 1);
+      padding: 8px;
+    }
+
+    &__status-pill {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      padding: 0 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+
       &.status-open {
         background: $status-open-bg;
         border: 1px solid $status-open-border;
@@ -224,7 +227,7 @@
       &.status-in-progress {
         background: $status-in-progress-bg;
         color: rgba(62, 64, 219, 1);
-        border: 1px solid transparent; // prevent jitter
+        border: 1px solid transparent;
       }
       &.status-complete {
         background: $status-complete-bg;
@@ -237,61 +240,79 @@
         border: 1px solid transparent;
       }
     }
-  }
 
-  // ── Status Caret ────────────────────────────────────────────────────
-  &__status-caret {
-    color: rgba(200, 207, 233, 1);
-    transition: transform 0.15s ease, color 0.15s ease;
+    &__status-caret {
+      color: rgba(200, 207, 233, 1);
+      transition: transform 0.15s ease, color 0.15s ease;
 
-    &--open {
-      color: rgb(86, 89, 255);
-      transform: rotate(180deg);
-    }
-  }
-
-  // ── Status Selector ─────────────────────────────────────────────────
-  &__status-selector {
-    position: relative;
-  }
-
-  &__status-dropdown {
-    position: absolute;
-    top: calc(100% + 5px);
-    left: 0;
-    right: 0;
-    background-color: rgba(255, 255, 255, 1);
-    border-radius: 5px;
-    box-shadow: 0 0 0 1px rgba(216, 220, 235, 1),
-      0 1.5px 3px -1.5px rgba(200, 207, 233, 1),
-      0 1px 0.5px -1px rgba(216, 220, 235, 1);
-    padding: 8px 0;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__status-option {
-    display: block;
-    width: 100%;
-    padding: 8px 12px;
-    border: none;
-    background: none;
-    text-align: left;
-    font-family: $font-family-base;
-    font-size: 14px;
-    font-weight: 500;
-    color: rgba(47, 48, 89, 1);
-    cursor: pointer;
-    transition: background 0.12s ease;
-
-    &:hover {
-      background: rgba(238, 240, 255, 0.5);
+      &--open {
+        color: rgb(86, 89, 255);
+        transform: rotate(180deg);
+      }
     }
 
-    &--active {
-      color: rgba(62, 64, 219, 1);
+    &__status-selector {
+      position: relative;
     }
+
+    &__status-dropdown {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      right: 0;
+      background-color: rgba(255, 255, 255, 1);
+      border-radius: 5px;
+      box-shadow: 0 0 0 1px rgba(216, 220, 235, 1),
+        0 1.5px 3px -1.5px rgba(200, 207, 233, 1),
+        0 1px 0.5px -1px rgba(216, 220, 235, 1);
+      padding: 8px 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+    }
+
+    &__status-option {
+      display: block;
+      width: 100%;
+      padding: 8px 12px;
+      border: none;
+      background: none;
+      text-align: left;
+      font-family: $font-family-base;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(47, 48, 89, 1);
+      cursor: pointer;
+      transition: background 0.12s ease;
+
+      &:hover {
+        background: rgba(238, 240, 255, 0.5);
+      }
+
+      &--active {
+        color: rgba(62, 64, 219, 1);
+      }
+    }
+  }
+}
+
+// ── Keyframes ─────────────────────────────────────────────────────────
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
   }
 }
 

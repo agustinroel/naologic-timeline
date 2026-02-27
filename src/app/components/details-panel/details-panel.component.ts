@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { trigger, transition, style, animate } from '@angular/animations';
 import { NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import type { WorkOrder } from '../../models';
 import { WorkOrderStatus } from '../../models';
@@ -21,17 +20,6 @@ import { WorkOrderStatus } from '../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './details-panel.component.html',
   styleUrl: './details-panel.component.scss',
-  animations: [
-    trigger('slideIn', [
-      transition(':enter', [
-        style({ transform: 'translateX(100%)' }),
-        animate('0.3s cubic-bezier(0.25, 0.8, 0.25, 1)', style({ transform: 'translateX(0)' })),
-      ]),
-      transition(':leave', [
-        animate('0.25s cubic-bezier(0.25, 0.8, 0.25, 1)', style({ transform: 'translateX(100%)' })),
-      ]),
-    ]),
-  ],
 })
 export class DetailsPanelComponent implements OnInit {
   private readonly fb = new FormBuilder();
