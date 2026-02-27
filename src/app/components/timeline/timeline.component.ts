@@ -65,6 +65,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   // @upgrade: Consider using a state machine for more complex timescale transitions
   readonly zoomLevel = signal<'day' | 'week' | 'month'>('week');
   readonly zoomLevels = ['day', 'week', 'month'] as const;
+  readonly zoomLevelsMap = ZOOM_LABELS;
   readonly zoomLabel = computed(() => ZOOM_LABELS[this.zoomLevel()]);
   readonly MONTHS_BUFFER = 6;
 

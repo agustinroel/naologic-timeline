@@ -41,15 +41,23 @@
       </div>
       @if (timescaleMenuOpen()) {
         <div class="timescale-menu">
+          <button
+            class="timescale-option"
+            [class.timescale-option--active]="zoomLevel() === 'day'"
+            aria-label="Switch to hourly view"
+            (click)="setZoomLevel('day')"
+          >
+            Hour
+          </button>
           @for (level of zoomLevels; track level) {
             <button
               class="timescale-option"
               [class.timescale-option--active]="zoomLevel() === level"
-              [attr.aria-label]="'Switch to ' + level + ' view'"
+              [attr.aria-label]="'Switch to ' + zoomLevelsMap[level] + ' view'"
               [attr.aria-pressed]="zoomLevel() === level"
               (click)="setZoomLevel(level)"
             >
-              {{ level | titlecase }}
+              {{ zoomLevelsMap[level] }}
             </button>
           }
         </div>
