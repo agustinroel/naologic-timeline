@@ -92,70 +92,67 @@
       </div>
     </div>
 
-    <!-- Start & End Date row -->
-    <div class="panel__date-row">
-      <!-- Start Date -->
-      <div class="panel__field">
-        <label class="panel__label">Start date</label>
-        <div class="panel__date-wrapper">
-          <div
-            class="panel__input panel__input--date"
-            role="button"
-            aria-haspopup="dialog"
-            aria-label="Select start date"
-            (click)="toggleDatepicker('start', $event)"
-          >
-            <span [class.panel__date-placeholder]="!getDateDisplay('startDate')">
-              {{ getDateDisplay('startDate') || 'Select date' }}
-            </span>
-          </div>
-
-          @if (openDatepicker() === 'start') {
-            <div class="panel__datepicker-dropdown" (click)="$event.stopPropagation()">
-              <ngb-datepicker
-                [startDate]="getDatepickerModel('startDate') || { year: 2026, month: 1 }"
-                [minDate]="{ year: 2020, month: 1, day: 1 }"
-                [maxDate]="{ year: 2035, month: 12, day: 31 }"
-                (dateSelect)="onDateSelect('startDate', $event)"
-                [dayTemplate]="dayTpl"
-                [navigation]="'select'"
-                outsideDays="visible"
-              />
-            </div>
-          }
+    <!-- End Date -->
+    <div class="panel__field">
+      <label class="panel__label">End date</label>
+      <div class="panel__date-wrapper">
+        <div
+          class="panel__input panel__input--date"
+          role="button"
+          aria-haspopup="dialog"
+          aria-label="Select end date"
+          (click)="toggleDatepicker('end', $event)"
+        >
+          <span [class.panel__date-placeholder]="!getDateDisplay('endDate')">
+            {{ getDateDisplay('endDate') || 'Select date' }}
+          </span>
         </div>
+
+        @if (openDatepicker() === 'end') {
+          <div class="panel__datepicker-dropdown" (click)="$event.stopPropagation()">
+            <ngb-datepicker
+              [startDate]="getDatepickerModel('endDate') || { year: 2026, month: 1 }"
+              [minDate]="{ year: 2020, month: 1, day: 1 }"
+              [maxDate]="{ year: 2035, month: 12, day: 31 }"
+              (dateSelect)="onDateSelect('endDate', $event)"
+              [dayTemplate]="dayTpl"
+              [navigation]="'select'"
+              outsideDays="visible"
+            />
+          </div>
+        }
       </div>
+    </div>
 
-      <!-- End Date -->
-      <div class="panel__field">
-        <label class="panel__label">End date</label>
-        <div class="panel__date-wrapper">
-          <div
-            class="panel__input panel__input--date"
-            role="button"
-            aria-haspopup="dialog"
-            aria-label="Select end date"
-            (click)="toggleDatepicker('end', $event)"
-          >
-            <span [class.panel__date-placeholder]="!getDateDisplay('endDate')">
-              {{ getDateDisplay('endDate') || 'Select date' }}
-            </span>
-          </div>
-
-          @if (openDatepicker() === 'end') {
-            <div class="panel__datepicker-dropdown" (click)="$event.stopPropagation()">
-              <ngb-datepicker
-                [startDate]="getDatepickerModel('endDate') || { year: 2026, month: 1 }"
-                [minDate]="{ year: 2020, month: 1, day: 1 }"
-                [maxDate]="{ year: 2035, month: 12, day: 31 }"
-                (dateSelect)="onDateSelect('endDate', $event)"
-                [dayTemplate]="dayTpl"
-                [navigation]="'select'"
-                outsideDays="visible"
-              />
-            </div>
-          }
+    <!-- Start Date -->
+    <div class="panel__field">
+      <label class="panel__label">Start date</label>
+      <div class="panel__date-wrapper">
+        <div
+          class="panel__input panel__input--date"
+          role="button"
+          aria-haspopup="dialog"
+          aria-label="Select start date"
+          (click)="toggleDatepicker('start', $event)"
+        >
+          <span [class.panel__date-placeholder]="!getDateDisplay('startDate')">
+            {{ getDateDisplay('startDate') || 'Select date' }}
+          </span>
         </div>
+
+        @if (openDatepicker() === 'start') {
+          <div class="panel__datepicker-dropdown" (click)="$event.stopPropagation()">
+            <ngb-datepicker
+              [startDate]="getDatepickerModel('startDate') || { year: 2026, month: 1 }"
+              [minDate]="{ year: 2020, month: 1, day: 1 }"
+              [maxDate]="{ year: 2035, month: 12, day: 31 }"
+              (dateSelect)="onDateSelect('startDate', $event)"
+              [dayTemplate]="dayTpl"
+              [navigation]="'select'"
+              outsideDays="visible"
+            />
+          </div>
+        }
       </div>
     </div>
   </div>

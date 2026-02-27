@@ -113,7 +113,7 @@
       padding: 24px 24px 24px 24px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 24px; // Consistent 24px spacing between all fields
     }
 
     &__field {

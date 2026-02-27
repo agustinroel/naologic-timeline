@@ -172,11 +172,12 @@ All bars: border-radius 8px, border inside 1px, height 34px.
 
 ### Backdrop Overlay
 
-When the side panel is open, the main timeline view behind it receives a blur effect.
+When the side panel is open, the main timeline view behind it receives a semi-transparent overlay to create a "desaturated" focus effect.
 
-| Property | Value                                   |
-| -------- | --------------------------------------- |
-| Effect   | Blur (approx. 2–4px, TBD during polish) |
+| Property   | Value                            |
+| ---------- | -------------------------------- |
+| Background | `rgba(255, 255, 255, 0.5)`       |
+| Effect     | No blur (clean desaturated look) |
 
 ### Panel Container
 

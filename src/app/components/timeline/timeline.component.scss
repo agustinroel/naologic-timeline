@@ -472,8 +472,7 @@
 .backdrop-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(230, 235, 245, 0.35);
-  backdrop-filter: blur(2px);
+  background: rgba(255, 255, 255, 0.5); // Slightly more saturated (less white) than 0.6
   z-index: 150;
   cursor: pointer;
   animation: fadeIn 0.3s ease-out;
