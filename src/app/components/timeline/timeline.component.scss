@@ -294,13 +294,18 @@
     border-right: 1px solid $color-grid-divider;
     user-select: none;
     white-space: nowrap;
-    overflow: hidden; // Force overflow hidden to prevent overlapping text
-    text-overflow: ellipsis;
     letter-spacing: 0.2px;
 
     &--current {
       background: rgba($color-primary-interaction, 0.03);
     }
+  }
+
+  &__label {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

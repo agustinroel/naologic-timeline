@@ -41,8 +41,8 @@ $status-blocked-text: #e65100;
 // Work Order Bar Container Palette (background / border)
 // Each bar has a status-specific colored background — NOT white
 // ---------------------------------------------------------------------------
-$bar-open-bg: rgba(228, 253, 255, 1);         // #E4FDFF (cyan)
-$bar-open-border: rgba(206, 251, 255, 1);     // #CEFBFF
+$bar-open-bg: #edeeff;
+$bar-open-border: #dee0ff;
 
 $bar-in-progress-bg: #edeeff;
 $bar-in-progress-border: #dee0ff;
