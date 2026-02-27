@@ -79,10 +79,6 @@ export class MockDataService {
     return this._workOrders();
   }
 
-  getOrdersByWorkCenter(workCenterId: string): DocEnvelope<WorkOrder>[] {
-    return this._workOrders().filter((o) => o.data.workCenterId === workCenterId);
-  }
-
   // ── Helpers ───────────────────────────────────────────────────────────
   private _generateWorkOrders(): DocEnvelope<WorkOrder>[] {
     const today = new Date();
@@ -197,7 +193,7 @@ export class MockDataService {
           id: 'wo-008',
           name: 'Ship Prep #8899',
           workCenterId: 'wc-005',
-          status: WorkOrderStatus.InProgress,
+          status: WorkOrderStatus.Open,
           startDate: d(20),
           endDate: d(80),
           description: 'Packaging for client AcmeCorp shipment',

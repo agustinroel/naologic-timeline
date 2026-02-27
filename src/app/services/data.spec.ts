@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { MockDataService } from './data';
+import { WorkOrderStatus } from '../models';
 
 describe('MockDataService', () => {
   let service: MockDataService;
@@ -30,9 +31,9 @@ describe('MockDataService', () => {
 
   it('all four statuses should be represented', () => {
     const statuses = new Set(service.getWorkOrders().map((o) => o.data.status));
-    expect(statuses.has('Open')).toBe(true);
-    expect(statuses.has('In Progress')).toBe(true);
-    expect(statuses.has('Complete')).toBe(true);
-    expect(statuses.has('Blocked')).toBe(true);
+    expect(statuses.has(WorkOrderStatus.Open)).toBe(true);
+    expect(statuses.has(WorkOrderStatus.InProgress)).toBe(true);
+    expect(statuses.has(WorkOrderStatus.Complete)).toBe(true);
+    expect(statuses.has(WorkOrderStatus.Blocked)).toBe(true);
   });
 });

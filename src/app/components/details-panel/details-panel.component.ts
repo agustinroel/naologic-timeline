@@ -50,7 +50,7 @@ export class DetailsPanelComponent implements OnInit {
   // ── Computed ──────────────────────────────────────────────────────────
   readonly isEditMode = computed(() => this.workOrder() !== null);
   readonly panelTitle = computed(() =>
-    this.isEditMode() ? 'Work Order Details' : 'Work Order Details',
+    this.isEditMode() ? 'Work Order Details' : 'Create Work Order',
   );
   readonly actionLabel = computed(() => (this.isEditMode() ? 'Save' : 'Create'));
 

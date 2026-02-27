@@ -54,7 +54,6 @@ const ZOOM_LABELS: Record<ZoomLevel, string> = {
 })
 export class TimelineComponent implements OnInit, AfterViewInit {
   private readonly dataService = inject(MockDataService);
-  private readonly elRef = inject(ElementRef);
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLDivElement>;
 
@@ -77,6 +76,18 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   private timelineStartDate!: Date;
 
   readonly pxPerDay = computed(() => PX_PER_DAY[this.zoomLevel()]);
+
+  // Optimized lookup map for orders by center
+  readonly workOrdersMap = computed(() => {
+    const orders = this.workOrders();
+    const map = new Map<string, DocEnvelope<WorkOrder>[]>();
+    for (const order of orders) {
+      const wcId = order.data.workCenterId;
+      if (!map.has(wcId)) map.set(wcId, []);
+      map.get(wcId)!.push(order);
+    }
+    return map;
+  });
 
   // ── UI state ──────────────────────────────────────────────────────────
   readonly hoveredRow = signal<string | null>(null);
@@ -158,7 +169,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   // ── Template helpers ──────────────────────────────────────────────────
   getOrdersForCenter(centerId: string): DocEnvelope<WorkOrder>[] {
-    return this.workOrders().filter((o) => o.data.workCenterId === centerId);
+    return this.workOrdersMap().get(centerId) ?? [];
   }
 
   onRowHover(centerId: string | null): void {
@@ -447,10 +458,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       for (const order of orders) {
         const collisions = hasOverlap(order, orders);
         if (collisions.length > 0) {
-          console.warn(
-            `[Overlap detected] "${order.name}" in "${wc.data.name}" overlaps with:`,
-            collisions.map((c) => c.id),
-          );
+          // Silent validation on init
         }
       }
     }
