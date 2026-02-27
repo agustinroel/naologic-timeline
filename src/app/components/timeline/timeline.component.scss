@@ -312,6 +312,7 @@
     width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1.4; // Added to prevent descender clipping
   }
 }
 

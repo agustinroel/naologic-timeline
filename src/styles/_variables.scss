@@ -75,7 +75,7 @@ $slide-out-shadow: 0 5px 15px 0 rgba(216, 220, 235, 1), 0 2.5px 3px -1.5px rgba(
 $today-indicator-width: 2px;
 $today-indicator-color: $color-primary-interaction;
 $timeline-row-height: 48px;
-$timeline-row-height-first: 32px; // Precisely fits the 8px top/8px bottom padding + 16px typical line height
+$timeline-row-height-first: 36px; // Increased to 36px to prevent text clipping (descenders)
 $timeline-header-height: 50px;
 
 // ---------------------------------------------------------------------------
