@@ -49,3 +49,63 @@ body {
 .no-select {
   user-select: none;
 }
+
+// Utility: Hide element visually but keep it for screen readers (Bootstrap standard)
+// Needed for ng-bootstrap components (like datepicker) which assume this exists
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+// =============================================================================
+// Native Datepicker Styling — Consistent with dropdown design
+// =============================================================================
+
+// The inner date text styling
+input[type='date'] {
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  font-weight: 400;
+  color: rgba(3, 9, 41, 1);
+
+  &::-webkit-datetime-edit {
+    font-family: $font-family-base;
+    font-size: $font-size-base;
+    font-weight: 400;
+    color: rgba(3, 9, 41, 1);
+  }
+
+  &::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+  }
+
+  &::-webkit-datetime-edit-text {
+    color: rgba(104, 113, 150, 0.5);
+  }
+}
+
+// Chrome/Edge datepicker popup panel
+::-webkit-calendar-picker {
+  font-family: $font-family-base;
+}
+
+// Style the datepicker popup via ::picker() (Chromium 133+)
+input[type='date']::picker(select) {
+  font-family: $font-family-base;
+  background: rgba(255, 255, 255, 1);
+  border: none;
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 1px rgba(104, 113, 150, 0.1),
+    0 2.5px 3px -1.5px rgba(200, 207, 233, 1),
+    0 4.5px 5px -1px rgba(216, 220, 235, 1);
+  padding: 12px;
+  color: rgba(47, 48, 89, 1);
+}

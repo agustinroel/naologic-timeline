@@ -148,7 +148,7 @@
               <!-- "Click to add dates" — z-index 10, above all bars -->
               @if (hoveredRow() === wc.data.id && cueVisible()) {
                 <div class="row-add-cue" [style.left.px]="cueLeftPx()">
-                  <span class="row-add-cue__tooltip">Click to add dates</span>
+                  <span class="row-add-cue__tooltip">Click to add event</span>
                   <div class="row-add-cue__rect"></div>
                 </div>
               }
@@ -169,3 +169,39 @@
     </section>
   </div>
 </div>
+
+<!-- ── Backdrop overlay (blur) ──────────────────────────────────────── -->
+@if (panelOpen()) {
+  <div class="backdrop-overlay" (click)="onPanelCancel()"></div>
+  <app-details-panel
+    [workOrder]="panelWorkOrder()"
+    [workCenterId]="panelWorkCenterId()"
+    [prefillStartDate]="panelPrefillDate()"
+    (save)="onPanelSave($event)"
+    (cancel)="onPanelCancel()"
+    (errorMsg)="showErrorToast($event)"
+  />
+}
+
+<!-- ── Error Toast ──────────────────────────────────────────────────────── -->
+@if (toastMessage()) {
+  <div class="error-toast">
+    <div class="error-toast__icon">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+    </div>
+    <span class="error-toast__text">{{ toastMessage() }}</span>
+  </div>
+}

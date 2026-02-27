@@ -16,7 +16,7 @@
   border-radius: 8px;
   display: flex;
   align-items: center;
-  padding: 0 $space-2 0 $space-3;
+  padding: 0 4px; /* Reduced from 0 8px 0 16px to support 24px min width */
   gap: $space-2;
   font-size: $font-size-sm;
   white-space: nowrap;
@@ -77,6 +77,11 @@
     border-radius: 5px;
     white-space: nowrap;
 
+    &.status-open {
+      background: $status-open-bg;
+      border: 1px solid $status-open-border;
+      color: rgba(62, 64, 219, 1);
+    }
     &.status-in-progress {
       background: $status-in-progress-bg;
       color: rgba(62, 64, 219, 1);

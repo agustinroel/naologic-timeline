@@ -40,11 +40,12 @@ export class WorkOrderBarComponent {
   // ── Computed ──────────────────────────────────────────────────────────
   readonly statusClass = computed(() => {
     const map: Record<string, string> = {
+      [WorkOrderStatus.Open]: 'status-open',
       [WorkOrderStatus.InProgress]: 'status-in-progress',
       [WorkOrderStatus.Complete]: 'status-complete',
       [WorkOrderStatus.Blocked]: 'status-blocked',
     };
-    return map[this.order().status] ?? 'status-in-progress';
+    return map[this.order().status] ?? 'status-open';
   });
 
   // ── Close menu when clicking outside ──────────────────────────────────

@@ -22,6 +22,6 @@ export function hasOverlap(
     if (existing.id === newOrder.id) return false; // skip self when editing
     const existingStart = new Date(existing.startDate).getTime();
     const existingEnd = new Date(existing.endDate).getTime();
-    return newStart < existingEnd && newEnd > existingStart;
+    return newStart <= existingEnd && newEnd >= existingStart;
   });
 }

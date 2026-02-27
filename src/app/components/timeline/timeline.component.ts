@@ -7,13 +7,16 @@ import {
   inject,
   signal,
   computed,
+  effect,
   ChangeDetectionStrategy,
   HostListener,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MockDataService } from '../../services/data';
 import type { DocEnvelope, WorkCenter, WorkOrder } from '../../models';
+import { WorkOrderStatus } from '../../models';
 import { WorkOrderBarComponent } from '../work-order-bar/work-order-bar.component';
+import { DetailsPanelComponent } from '../details-panel/details-panel.component';
 import { hasOverlap } from '../../utils';
 
 // ── Types ───────────────────────────────────────────────────────────────
@@ -44,7 +47,7 @@ const ZOOM_LABELS: Record<ZoomLevel, string> = {
 @Component({
   selector: 'app-timeline',
   standalone: true,
-  imports: [CommonModule, WorkOrderBarComponent],
+  imports: [CommonModule, WorkOrderBarComponent, DetailsPanelComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './timeline.component.html',
   styleUrl: './timeline.component.scss',
@@ -80,6 +83,16 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   readonly cueLeftPx = signal<number>(0);
   readonly cueVisible = signal(false);
 
+  // ── Panel state ───────────────────────────────────────────────────────
+  readonly panelOpen = signal(false);
+  readonly panelWorkOrder = signal<WorkOrder | null>(null);
+  readonly panelWorkCenterId = signal<string>('');
+  readonly panelPrefillDate = signal<string>('');
+
+  // ── Error Toast ───────────────────────────────────────────────────────
+  readonly toastMessage = signal<string | null>(null);
+  private toastTimeout: any;
+
   // ── Close timescale dropdown on outside click ─────────────────────────
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
@@ -89,10 +102,32 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     }
   }
 
+  constructor() {
+    // Automatically persist orders whenever the signal changes
+    effect(() => {
+      const orders = this.workOrders();
+      if (orders.length > 0) {
+        localStorage.setItem('naologic_work_orders', JSON.stringify(orders));
+      }
+    });
+  }
+
   // ── Lifecycle ─────────────────────────────────────────────────────────
   ngOnInit(): void {
     this.workCenters.set(this.dataService.getWorkCenters());
-    this.workOrders.set(this.dataService.getWorkOrders());
+
+    // Load from localStorage or fallback to mock data
+    const saved = localStorage.getItem('naologic_work_orders');
+    if (saved) {
+      try {
+        this.workOrders.set(JSON.parse(saved));
+      } catch (e) {
+        this.workOrders.set(this.dataService.getWorkOrders());
+      }
+    } else {
+      this.workOrders.set(this.dataService.getWorkOrders());
+    }
+
     this._rebuildColumns();
     this._checkInitialOverlaps();
   }
@@ -169,16 +204,22 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     const start = new Date(order.startDate);
     const end = new Date(order.endDate);
     const diffMs = end.getTime() - start.getTime();
-    const diffDays = diffMs / (1000 * 60 * 60 * 24);
-    return Math.max(Math.round(diffDays * this.pxPerDay()), 100);
+    const diffDays = diffMs / (1000 * 60 * 60 * 24) + 1; // +1 because dates are inclusive
+    return Math.max(Math.round(diffDays * this.pxPerDay()), 24); // min 24px so it remains clickable
   }
 
   onEditOrder(orderId: string): void {
-    console.log('[Timeline] Edit order:', orderId);
+    const envelope = this.workOrders().find((o) => o.data.id === orderId);
+    if (envelope) {
+      this.panelWorkOrder.set(envelope.data);
+      this.panelWorkCenterId.set(envelope.data.workCenterId);
+      this.panelPrefillDate.set('');
+      this.panelOpen.set(true);
+    }
   }
 
   onDeleteOrder(orderId: string): void {
-    console.log('[Timeline] Delete order:', orderId);
+    this.workOrders.update((orders) => orders.filter((o) => o.data.id !== orderId));
   }
 
   onEmptyClick(event: MouseEvent, workCenterId: string): void {
@@ -193,7 +234,65 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     clickDate.setDate(clickDate.getDate() + Math.floor(dayOffset));
     const isoDate = clickDate.toISOString().split('T')[0];
 
-    console.log(`[Timeline] Create new order on ${workCenterId} starting ${isoDate}`);
+    this.panelWorkOrder.set(null);
+    this.panelWorkCenterId.set(workCenterId);
+    this.panelPrefillDate.set(isoDate);
+    this.panelOpen.set(true);
+  }
+
+  // ── Panel actions ────────────────────────────────────────────────────
+  onPanelCancel(): void {
+    this.panelOpen.set(false);
+    this.panelWorkOrder.set(null);
+  }
+
+  onPanelSave(data: Partial<WorkOrder>): void {
+    const wo = data as WorkOrder;
+
+    const newStart = new Date(wo.startDate).getTime();
+    const newEnd = new Date(wo.endDate).getTime();
+
+    if (newStart > newEnd) {
+      this.showErrorToast('Start date cannot be after end date.');
+      return;
+    }
+
+    // Check overlap
+    const existingOrders = this.getOrdersForCenter(wo.workCenterId)
+      .map((o) => o.data)
+      .filter((o) => o.id !== wo.id); // Exclude self in edit mode
+
+    const overlaps = hasOverlap(wo, existingOrders);
+    if (overlaps.length > 0) {
+      this.showErrorToast(
+        'This work order overlaps with an existing order in this Work Center. Please adjust the timeline.',
+      );
+      return;
+    }
+
+    if (this.panelWorkOrder()) {
+      // Edit mode — update existing
+      this.workOrders.update((orders) =>
+        orders.map((o) => (o.data.id === wo.id ? { ...o, data: { ...o.data, ...wo } } : o)),
+      );
+    } else {
+      // Create mode — add new
+      const envelope: DocEnvelope<WorkOrder> = {
+        docId: wo.id,
+        docType: 'work-order',
+        data: wo,
+      };
+      this.workOrders.update((orders) => [...orders, envelope]);
+    }
+
+    this.panelOpen.set(false);
+    this.panelWorkOrder.set(null);
+  }
+
+  showErrorToast(msg: string): void {
+    this.toastMessage.set(msg);
+    if (this.toastTimeout) clearTimeout(this.toastTimeout);
+    this.toastTimeout = setTimeout(() => this.toastMessage.set(null), 4000);
   }
 
   // ── Column building ───────────────────────────────────────────────────
@@ -253,9 +352,10 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       const current = new Date(this.timelineStartDate);
       while (current <= endDate) {
         const isCurrent = current.toDateString() === today.toDateString();
+        const narrowDay = current.toLocaleDateString('en-US', { weekday: 'narrow' });
         columns.push({
           key: `d-${current.toISOString().split('T')[0]}`,
-          label: current.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' }),
+          label: `${narrowDay} ${current.getDate()}`,
           widthPx: ppd,
           startOffset: offset,
           isCurrent,

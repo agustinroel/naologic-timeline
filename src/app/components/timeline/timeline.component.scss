@@ -164,7 +164,7 @@
   flex: 1;
   overflow: hidden;
   border: 1px solid $color-grid-divider;
-  margin: 0 102px 20px; // 102px from both left and right
+  margin: 0 102px 2px; // 102px sides, 2px bottom gap per Sketch
   background: $color-surface;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
@@ -229,6 +229,23 @@
   overflow-x: auto;
   overflow-y: auto;
   position: relative;
+  
+  // Custom minimal scrollbar
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(104, 113, 150, 0.2); // Subtle placeholder color
+    border-radius: 4px;
+    
+    &:hover {
+      background: rgba(104, 113, 150, 0.4);
+    }
+  }
 }
 
 .timeline-canvas {
@@ -256,8 +273,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center; // Centers text vertically
-    padding: 8px 0; // 8px top and bottom padding per requirements
-    font-size: 14px;
+    padding: 8px 4px; // Reduced side padding to 4px
+    font-size: 14px; // Reverted to 14px per design spec
     font-weight: 500;
     font-family: 'Circular-Std', sans-serif;
     color: rgba(104, 113, 150, 1);
@@ -265,7 +282,7 @@
     border-right: 1px solid $color-grid-divider;
     user-select: none;
     white-space: nowrap;
-    overflow: visible;
+    overflow: hidden; // Force overflow hidden to prevent overlapping text
     text-overflow: ellipsis;
     letter-spacing: 0.2px;
 
@@ -305,7 +322,7 @@
 .grid-col-fill {
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: 0px; // Fills to bottom 
   background: rgba(247, 249, 252, 1); // #F7F9FC
   z-index: 0;
   pointer-events: none;
@@ -314,7 +331,7 @@
 .grid-line {
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: 37px; // Lines stop 37px short of the bottom
   width: 1px;
   background: $color-grid-divider;
   z-index: 0;
@@ -324,7 +341,7 @@
 .current-month-line {
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: 76px; // 37px + 39px shorter than normal lines
   width: 3px; 
   background-color: rgba(212, 215, 255, 1);
   z-index: 0; // Behind bars which are z-index 1
@@ -336,7 +353,7 @@
   position: relative;
   height: $timeline-row-height; // 48px
   background: transparent; // No horizontal border in the grid body!
-  transition: background-color 0.15s ease;
+  transition: background-color 0.25s ease-in-out;
   cursor: pointer;
 
   &.row--hovered {
@@ -388,5 +405,55 @@
     border: 1px solid $add-cue-rect-border;
     border-radius: 8px;
     background: $add-cue-rect-bg;
+  }
+}
+
+// ── Backdrop overlay (when panel is open) ────────────────────────────
+.backdrop-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(230, 235, 245, 0.35);
+  z-index: 150;
+  cursor: pointer;
+}
+// ── Error Toast ────────────────────────────────────────────────────────
+.error-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(47, 48, 89, 0.15), 0 0 1px rgba(47, 48, 89, 0.1);
+  border: 1px solid rgba(227, 59, 59, 0.2);
+  animation: toast-slide-down 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.error-toast__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-toast__text {
+  font-family: 'Circular-Std', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #e33b3b;
+}
+
+@keyframes toast-slide-down {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
   }
 }

@@ -3,6 +3,7 @@
  * Maps directly to the status badge color scheme in the styling guide.
  */
 export enum WorkOrderStatus {
+  Open = 'Open',
   InProgress = 'In progress',
   Complete = 'Complete',
   Blocked = 'Blocked',
