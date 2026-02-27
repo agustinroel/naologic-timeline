@@ -82,6 +82,7 @@
           <div
             class="left-panel__row"
             [class.row--first]="isFirst"
+            [class.row--hovered]="hoveredRow() === wc.data.id"
             (mouseenter)="onRowHover(wc.data.id)"
             (mouseleave)="onRowHover(null)"
           >
