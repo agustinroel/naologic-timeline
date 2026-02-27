@@ -48,6 +48,13 @@ export class WorkOrderBarComponent {
     return map[this.order().status] ?? 'status-open';
   });
 
+  readonly tooltipText = computed(() => {
+    const wo = this.order();
+    const start = new Date(wo.startDate).toLocaleDateString();
+    const end = new Date(wo.endDate).toLocaleDateString();
+    return `${wo.name}\nStatus: ${wo.status}\nRange: ${start} - ${end}`;
+  });
+
   // ── Close menu when clicking outside ──────────────────────────────────
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {

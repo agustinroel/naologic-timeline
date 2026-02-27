@@ -61,8 +61,10 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   readonly workCenters = signal<DocEnvelope<WorkCenter>[]>([]);
   readonly workOrders = signal<DocEnvelope<WorkOrder>[]>([]);
 
-  // ── Zoom engine ───────────────────────────────────────────────────────
-  readonly zoomLevel = signal<ZoomLevel>('month');
+  // ── Zoom State ───────────────────────────────────────────────────────
+  // @upgrade: Consider using a state machine for more complex timescale transitions
+  readonly zoomLevel = signal<'day' | 'week' | 'month'>('week');
+  readonly zoomLevels = ['day', 'week', 'month'] as const;
   readonly zoomLabel = computed(() => ZOOM_LABELS[this.zoomLevel()]);
   readonly MONTHS_BUFFER = 6;
 
@@ -146,7 +148,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
       this.workOrders.set(this.dataService.getWorkOrders());
     }
 
-    this._rebuildColumns();
+    this._generateColumns();
     this._checkInitialOverlaps();
   }
 
@@ -163,7 +165,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     this.timescaleMenuOpen.set(false);
     if (this.zoomLevel() === level) return;
     this.zoomLevel.set(level);
-    this._rebuildColumns();
+    this._generateColumns();
     requestAnimationFrame(() => this._centerOnToday());
   }
 
@@ -326,6 +328,10 @@ export class TimelineComponent implements OnInit, AfterViewInit {
     this.toastTimeout = setTimeout(() => this.toastMessage.set(null), 4000);
   }
 
+  scrollToToday(): void {
+    this._centerOnToday();
+  }
+
   // ── Drag to Scroll Events ─────────────────────────────────────────────
   onMouseDown(e: MouseEvent): void {
     const el = this.scrollContainer?.nativeElement;
@@ -362,7 +368,8 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   // ── Column building ───────────────────────────────────────────────────
-  private _rebuildColumns(): void {
+  // @upgrade: Implement virtualization (e.g., CDK Virtual Scroll) for handling 1000+ work centers
+  private _generateColumns(): void {
     const zoom = this.zoomLevel();
     const today = new Date();
     const ppd = PX_PER_DAY[zoom];

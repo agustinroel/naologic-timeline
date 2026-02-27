@@ -6,6 +6,7 @@ import {
   computed,
   ChangeDetectionStrategy,
   OnInit,
+  HostListener,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -157,5 +158,10 @@ export class DetailsPanelComponent implements OnInit {
     if (this.openDatepicker()) {
       this.openDatepicker.set(null);
     }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapePress(): void {
+    this.onCancel();
   }
 }
