@@ -48,6 +48,11 @@ export class WorkOrderBarComponent {
     return map[this.order().status] ?? 'status-open';
   });
 
+  readonly ariaLabel = computed(() => {
+    const o = this.order();
+    return `Work order: ${o.name}. Status: ${o.status}. From ${o.startDate} to ${o.endDate}.`;
+  });
+
   // ── Close menu when clicking outside ──────────────────────────────────
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {

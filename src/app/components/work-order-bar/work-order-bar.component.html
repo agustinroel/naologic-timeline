@@ -6,7 +6,8 @@
   [ngClass]="['bar', statusClass(), menuOpen() ? 'menu-open' : '']"
   [style.left.px]="leftPx()"
   [style.width.px]="widthPx()"
-  [title]="order().name"
+  [title]="ariaLabel()"
+  [attr.aria-label]="ariaLabel()"
   (mouseenter)="onMouseEnter()"
   (mouseleave)="onMouseLeave()"
 >
@@ -21,11 +22,22 @@
   <!-- Three-dot trigger + dropdown wrapper -->
   @if (hovered() || menuOpen()) {
     <div class="bar__menu-wrapper">
-      <button class="bar__menu-trigger" aria-label="Actions" (click)="toggleMenu($event)">⋯</button>
+      <button
+        class="bar__menu-trigger"
+        aria-label="Open work order menu"
+        [attr.aria-expanded]="menuOpen()"
+        (click)="toggleMenu($event)"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="12" cy="5" r="2" />
+          <circle cx="12" cy="12" r="2" />
+          <circle cx="12" cy="19" r="2" />
+        </svg>
+      </button>
 
       <!-- Dropdown — visible only after clicking the three-dot trigger -->
       @if (menuOpen()) {
-        <div class="bar__menu-dropdown">
+        <div class="bar__menu-dropdown" (click)="$event.stopPropagation()">
           <button class="bar__menu-item" (click)="onEdit($event)">Edit</button>
           <button class="bar__menu-item bar__menu-item--danger" (click)="onDelete($event)">
             Delete
