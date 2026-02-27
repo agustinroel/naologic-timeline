@@ -129,18 +129,23 @@
     top: calc(100% + 5px);
     left: 0;
     width: 200px;
+    height: 80px;
     background-color: rgba(255, 255, 255, 1);
     border: none;
     border-radius: 5px;
     box-shadow: 0 0 0 1px rgba(104, 113, 150, 0.1), 0 2.5px 3px -1.5px rgba(200, 207, 233, 1), 0 4.5px 5px -1px rgba(216, 220, 235, 1);
-    padding: 12px 0;
+    padding: 12px 0; // 12px top/bottom padding as per request
     z-index: 100;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
   }
 
   &__menu-item {
     display: block;
     width: 100%;
-    padding: 8px 16px;
+    height: 28px; // Leaves exactly (80 - 12*2)/2 = 28px per item
+    padding: 0 12px; // 12px left padding as per request
     border: none;
     background: none;
     text-align: left;
@@ -149,6 +154,7 @@
     font-family: 'Circular-Std', sans-serif;
     color: rgba(47, 48, 89, 1);
     cursor: pointer;
+    line-height: 28px;
     transition: background 0.12s ease;
 
     &:hover {

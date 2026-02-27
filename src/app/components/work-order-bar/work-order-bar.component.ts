@@ -48,11 +48,9 @@ export class WorkOrderBarComponent {
     return map[this.order().status] ?? 'status-open';
   });
 
-  readonly tooltipText = computed(() => {
-    const wo = this.order();
-    const start = new Date(wo.startDate).toLocaleDateString();
-    const end = new Date(wo.endDate).toLocaleDateString();
-    return `${wo.name}\nStatus: ${wo.status}\nRange: ${start} - ${end}`;
+  readonly ariaLabel = computed(() => {
+    const o = this.order();
+    return `Work order: ${o.name}. Status: ${o.status}. From ${o.startDate} to ${o.endDate}.`;
   });
 
   // ── Close menu when clicking outside ──────────────────────────────────
