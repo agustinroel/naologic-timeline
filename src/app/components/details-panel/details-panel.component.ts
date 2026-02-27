@@ -39,6 +39,7 @@ export class DetailsPanelComponent implements OnInit {
   readonly statusOptions = Object.values(WorkOrderStatus);
   readonly statusDropdownOpen = signal(false);
   readonly openDatepicker = signal<'start' | 'end' | null>(null);
+  readonly currentStatus = signal<WorkOrderStatus>(WorkOrderStatus.Open);
 
   // ── Form ──────────────────────────────────────────────────────────────
   readonly form: FormGroup = this.fb.group({
@@ -56,7 +57,7 @@ export class DetailsPanelComponent implements OnInit {
   readonly actionLabel = computed(() => (this.isEditMode() ? 'Save' : 'Create'));
 
   readonly selectedStatusClass = computed(() => {
-    const status = this.form.get('status')?.value as WorkOrderStatus;
+    const status = this.currentStatus();
     const map: Record<string, string> = {
       [WorkOrderStatus.Open]: 'status-open',
       [WorkOrderStatus.InProgress]: 'status-in-progress',
@@ -75,6 +76,7 @@ export class DetailsPanelComponent implements OnInit {
         endDate: wo.endDate,
         startDate: wo.startDate,
       });
+      this.currentStatus.set(wo.status);
     } else if (this.prefillStartDate()) {
       this.form.patchValue({ startDate: this.prefillStartDate() });
     }
@@ -89,6 +91,7 @@ export class DetailsPanelComponent implements OnInit {
 
   selectStatus(status: WorkOrderStatus): void {
     this.form.patchValue({ status });
+    this.currentStatus.set(status);
     this.statusDropdownOpen.set(false);
   }
 

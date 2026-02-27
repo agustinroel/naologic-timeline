@@ -53,8 +53,8 @@
           aria-label="Select status"
           (click)="toggleStatusDropdown($event)"
         >
-          <span class="panel__status-pill" [class]="selectedStatusClass()">
-            {{ form.get('status')?.value }}
+          <span class="panel__status-pill" [ngClass]="selectedStatusClass()">
+            {{ currentStatus() }}
           </span>
           <svg
             class="panel__status-caret"

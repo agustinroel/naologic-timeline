@@ -63,7 +63,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   // ── Zoom State ───────────────────────────────────────────────────────
   // @upgrade: Consider using a state machine for more complex timescale transitions
-  readonly zoomLevel = signal<'day' | 'week' | 'month'>('week');
+  readonly zoomLevel = signal<'day' | 'week' | 'month'>('month');
   readonly zoomLevels = ['day', 'week', 'month'] as const;
   readonly zoomLevelsMap = ZOOM_LABELS;
   readonly zoomLabel = computed(() => ZOOM_LABELS[this.zoomLevel()]);
@@ -81,6 +81,8 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   readonly pxPerDay = computed(() => PX_PER_DAY[this.zoomLevel()]);
 
   // Optimized lookup map for orders by center
+  // The map is created once when the component is initialized and is not recreated on every change detection cycle.
+  // This is because the map is created outside the computed function and is only updated when the workOrders signal changes.
   readonly workOrdersMap = computed(() => {
     const orders = this.workOrders();
     const map = new Map<string, DocEnvelope<WorkOrder>[]>();
